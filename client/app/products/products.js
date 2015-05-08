@@ -15,5 +15,15 @@ angular.module('meanstackApp')
         controller: 'ProductViewCtrl'
       })
 
+      .state('newProduct', {
+        url: '/products/new',
+        templateUrl: 'app/products/product-new.html',
+        controller: 'ProductNewCtrl'
+      })
+
+      .state('editProduct', {
+        url: '/products/:id/edit',
+        templateUrl: 'app/products/product-edit.html',
+        controller: 'ProductEditCtrl'
       });
   });

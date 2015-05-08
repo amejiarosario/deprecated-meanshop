@@ -1,6 +1,8 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
 <div class="container">
+  <h1>Products</h1>
+  <a ui-sref="newProduct">New Product</a>
   <div class="row">
     <div class="col-sm-6 col-md-4" ng-repeat="product in products">
       <div class="thumbnail">
