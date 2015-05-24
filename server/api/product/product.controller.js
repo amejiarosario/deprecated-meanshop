@@ -13,10 +13,8 @@ exports.index = function(req, res) {
 
 // Get a single product
 exports.show = function(req, res) {
-  Product.findById(req.params.id, function (err, product) {
-    if(err) { return handleError(res, err); }
-    if(!product) { return res.send(404); }
-    return res.json(product);
+  handleProductId(req, res, function(product){
+    return res.json(200, product);
   });
 };
 
@@ -30,10 +28,7 @@ exports.create = function(req, res) {
 
 // Updates an existing product in the DB.
 exports.update = function(req, res) {
-  if(req.body._id) { delete req.body._id; }
-  Product.findById(req.params.id, function (err, product) {
-    if (err) { return handleError(res, err); }
-    if(!product) { return res.send(404); }
+  handleProductId(req, res, function(product){
     var updated = _.merge(product, req.body);
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
@@ -44,9 +39,7 @@ exports.update = function(req, res) {
 
 // Deletes a product from the DB.
 exports.destroy = function(req, res) {
-  Product.findById(req.params.id, function (err, product) {
-    if(err) { return handleError(res, err); }
-    if(!product) { return res.send(404); }
+  handleProductId(req, res, function(product){
     product.remove(function(err) {
       if(err) { return handleError(res, err); }
       return res.send(204);
@@ -54,6 +47,17 @@ exports.destroy = function(req, res) {
   });
 };
 
+function handleProductId(req, res, callback){
+  Product.findById(req.params.id, function (err, product) {
+    if(err) { return handleError(res, err); }
+    if(!product) {
+      return res.json(404,
+        { message: 'Product (' + req.params.id + ') not found.' });
+    }
+    return callback(product);
+  });
+}
+
 function handleError(res, err) {
-  return res.send(500, err);
+  return res.json(500, err);
 }
