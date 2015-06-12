@@ -3,6 +3,8 @@
 
 'use strict';
 
+var HtmlReporter = require("protractor-html-screenshot-reporter");
+
 exports.config = {
   // The timeout for each script run on the browser. This should be longer
   // than the maximum time your application needs to stabilize between tasks.
@@ -45,6 +47,18 @@ exports.config = {
   //
   // See the full list at https://github.com/juliemr/minijasminenode
   jasmineNodeOpts: {
+    showColors: true,
+    isVerbose: true,
+    realtimeFailure: true,
+    includeStackTrace: true,
     defaultTimeoutInterval: 30000
-  }
+  },
+
+  onPrepare: function() {
+    // screenshot reporter
+    jasmine.getEnv().addReporter(new HtmlReporter({
+      baseDirectory: 'test-results/e2e',
+      docName: 'index.html'
+    }));
+  },
 };
