@@ -2,7 +2,7 @@
 'use strict';
 
 module.exports = function (grunt) {
-  var localConfig;
+  var localConfig, config, mongoose;
   try {
     localConfig = require('./server/config/local.env');
   } catch(e) {
@@ -603,6 +603,7 @@ module.exports = function (grunt) {
       return grunt.task.run([
         'env:all',
         'env:test',
+        'db:clean',
         'mochaTest'
       ]);
     }
@@ -624,6 +625,7 @@ module.exports = function (grunt) {
         'clean:server',
         'env:all',
         'env:test',
+        'db:clean',
         'injector:sass',
         'concurrent:test',
         'injector',
@@ -664,4 +666,28 @@ module.exports = function (grunt) {
     'test',
     'build'
   ]);
+
+  grunt.registerTask('db', function (target) {
+    if(target === 'clean'){
+      var done = this.async();
+      config = require('./server/config/environment');
+      mongoose = require('mongoose');
+
+      mongoose.connect(config.mongo.uri, config.mongo.options, function(err){
+        if(err) {
+          done(err);
+        } else {
+          mongoose.connection.db.dropDatabase(function (err) {
+            if(err) {
+              console.log('Connected to ' + config.mongo.uri);
+              done(err);
+            } else {
+              console.log('Dropped ' + config.mongo.uri);
+              done();
+            }
+          });
+        }
+      });
+    }
+  });
 };

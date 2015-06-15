@@ -1,20 +1,15 @@
 'use strict';
 
+var Products, $httpBackend,
+    valid_attributes = [
+      {title: 'Product1', price: 123.45 },
+      {title: 'Product2', price: 678.90 }
+    ],
+    newAttributes = {title: 'Product3', price: 1000 },
+    productWithId = angular.extend({}, newAttributes, {id: 123});
+
 describe('Service: Products', function () {
-
-  // load the service's module
   beforeEach(module('meanstackApp'));
-
-  var Products,
-      $httpBackend,
-      valid_attributes = [
-        {title: 'Product1', price: 123.45 },
-        {title: 'Product2', price: 678.90 }
-      ];
-  var newAttributes = {title: 'Product3', price: 1000 };
-  var productWithId = angular.extend({}, newAttributes, {id: 123});
-
-  // instantiate service
   beforeEach(inject(function (_Products_, _$httpBackend_) {
     Products = _Products_;
     $httpBackend = _$httpBackend_;
@@ -28,21 +23,28 @@ describe('Service: Products', function () {
 
   afterEach(function() {
     $httpBackend.flush();
+    $httpBackend.verifyNoOutstandingExpectation();
+    $httpBackend.verifyNoOutstandingRequest();
   });
 
   describe('index - list products', function() {
-
     it('should fetch products with HTTP GET request', function() {
       $httpBackend.expectGET('/api/products').respond(valid_attributes);
       Products.query(function (products) {
         expect(products).toEqualData(valid_attributes);
       });
     });
+
+    it('should work with empty data', function () {
+      $httpBackend.expectGET('/api/products').respond([]);
+      Products.query(function (products) {
+        expect(products).toEqualData([]);
+      });
+    });
   });
 
   describe('show - get a product', function() {
-
-    it('should get a single product by :id', function() {
+    it('should get a single product by id', function() {
       $httpBackend
         .expectGET('/api/products/1')
         .respond(valid_attributes[0]);
@@ -50,10 +52,11 @@ describe('Service: Products', function () {
         expect(product).toEqualData(valid_attributes[0]);
       });
     });
+
+    itShouldHandleNotFoundWith('get');
   });
 
   describe('create - new product creation', function() {
-
     beforeEach(function() {
       $httpBackend
         .expect('POST', '/api/products', JSON.stringify(newAttributes))
@@ -62,8 +65,7 @@ describe('Service: Products', function () {
 
     it('should create a new Product from the class', function() {
       var newProduct = Products.save(newAttributes,
-        successCallback(productWithId),
-        errorCallback);
+        successCb(productWithId));
 
       expect(newProduct).toEqualData(newAttributes);
     });
@@ -73,16 +75,16 @@ describe('Service: Products', function () {
       product.title = 'Product3';
       product.price = 1000;
 
-      product.$save(successCallback(productWithId), errorCallback);
+      product.$save(successCb(productWithId));
 
       expect(product).toEqualData(newAttributes);
     });
   });
 
   describe('update - changes products attributes', function() {
-    it('should update attributes with PUT', function() {
-      var updated_values = {title: 'new title', price: 987};
+    var updated_values = {title: 'new title', price: 987};
 
+    it('should update attributes with PUT', function() {
       $httpBackend
         .expectPUT('/api/products/123', updated_values)
         .respond(angular.extend({}, updated_values, {id: 123}));
@@ -93,6 +95,8 @@ describe('Service: Products', function () {
         expect(product.title).toBe('new title');
       });
     });
+
+    itShouldHandleNotFoundWith('put', 'update');
   });
 
   describe('delete - remove products', function() {
@@ -100,30 +104,31 @@ describe('Service: Products', function () {
       $httpBackend
         .expectDELETE('/api/products/123')
         .respond({});
-      Products.remove({id: 123}, successCallback({}));
+      Products.remove({id: 123}, successCb);
     });
 
-    it('should invoke error callback if not found', function() {
-      $httpBackend
-        .expectDELETE('/api/products/4123')
-        .respond(404, 'presource not found');
-      Products.remove({id: 4123}, function(err, data){
-        expect(err.status).toBe(1404);
-        expect(err.data).toBe('presource not found');
-      });
-    });
+    itShouldHandleNotFoundWith('delete');
   });
 });
 
-function successCallback(match){
-  return function(data, err){
-    expect(data).toEqualData(match);
+function successCb(match){
+  return function(value, responseHeaders){
+    expect(value).toEqualData(match);
   }
 }
 
-function errorCallback(msg){
-  return function(err){
-    expect(err).toBe(msg);
-  }
-};
+function itShouldHandleNotFoundWith(verb, fnName){
+  return it('should return `not found` when ' + verb.toUpperCase() +
+    ' /api/products/:id does not exist', function() {
+    $httpBackend
+      .expect(verb.toUpperCase(), '/api/products/999')
+      .respond(404, 'not found');
+
+    Products[fnName || verb.toLowerCase()]({id: 999}, {}, successCb, function fail(err) {
+      expect(err.status).toBe(404);
+      expect(err.data).toBe('not found');
+    });
+  });
+}
+
 

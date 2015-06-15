@@ -7,26 +7,33 @@ angular.module('meanstackApp')
 
   .controller('ProductViewCtrl', function ($scope, $state, $stateParams, Products) {
     $scope.product = Products.get({id: $stateParams.id});
-
     $scope.deleteProduct = function(product){
-      Products.delete(product);
-      $state.go('products');
+      Products.delete({id: $scope.product._id}, function (value, responseHeaders) {
+          $state.go('products');
+      }, errorHandler($scope));
     }
   })
 
   .controller('ProductNewCtrl', function ($scope, $state, Products) {
     $scope.product = {}; // create a new instance
-    $scope.addProduct = function(product){
-      Products.create($scope.product);
-      $state.go('products');
+    $scope.addProduct = function(){
+      Products.save($scope.product, function(value, responseHeaders){
+        $state.go('viewProduct', {id: value._id});
+      }, errorHandler($scope));
     }
   })
 
   .controller('ProductEditCtrl', function ($scope, $state, $stateParams, Products) {
     $scope.product = Products.get({id: $stateParams.id});
-
-    $scope.editProduct = function(product){
-      Products.update($scope.product);
-      $state.go('products');
+    $scope.editProduct = function(){
+      Products.update({id: $scope.product._id}, $scope.product, function(value, responseHeaders){
+        $state.go('viewProduct', {id: value._id});
+      }, errorHandler($scope));
     }
   });
+
+function errorHandler(scope){
+  return function(httpResponse){
+    scope.errors = JSON.stringify(httpResponse);
+  }
+}
