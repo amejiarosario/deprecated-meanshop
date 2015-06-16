@@ -667,27 +667,27 @@ module.exports = function (grunt) {
     'build'
   ]);
 
-  grunt.registerTask('db', function (target) {
-    if(target === 'clean'){
-      var done = this.async();
-      config = require('./server/config/environment');
-      mongoose = require('mongoose');
+grunt.registerTask('db', function (target) {
+  if(target === 'clean'){
+    var done = this.async();
+    config = require('./server/config/environment');
+    mongoose = require('mongoose');
 
-      mongoose.connect(config.mongo.uri, config.mongo.options, function(err){
-        if(err) {
-          done(err);
-        } else {
-          mongoose.connection.db.dropDatabase(function (err) {
-            if(err) {
-              console.log('Connected to ' + config.mongo.uri);
-              done(err);
-            } else {
-              console.log('Dropped ' + config.mongo.uri);
-              done();
-            }
-          });
-        }
-      });
-    }
-  });
+    mongoose.connect(config.mongo.uri, config.mongo.options, function(err){
+      if(err) {
+        done(err);
+      } else {
+        mongoose.connection.db.dropDatabase(function (err) {
+          if(err) {
+            console.log('Connected to ' + config.mongo.uri);
+            done(err);
+          } else {
+            console.log('Dropped ' + config.mongo.uri);
+            done();
+          }
+        });
+      }
+    });
+  }
+});
 };
