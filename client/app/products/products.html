@@ -13,6 +13,7 @@
           <p>{{product.price | currency }}</p>
           <p>
             <a href="#" class="btn btn-primary" role="button">Buy</a>
+            <ngcart-addtocart id="{{product.id}}" name="{{product.title}}" price="{{product.price}}">Add to Cart</ngcart-addtocart>
             <a ui-sref="viewProduct({id: product._id})" class="btn btn-default" role="button">Details</a>
           </p>
         </div>

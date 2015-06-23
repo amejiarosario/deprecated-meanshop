@@ -7,7 +7,8 @@ angular.module('meanstackApp', [
   'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
-  'ngResource'
+  'ngResource',
+  'ngCart'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider
