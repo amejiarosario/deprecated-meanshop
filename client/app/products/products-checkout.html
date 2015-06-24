@@ -1,0 +1,11 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+
+<div class="container">
+  <h1>Cart</h1>
+  <ngcart-cart></ngcart-cart>
+
+  <h1>Checkout</h1>
+  <ngcart-checkout service="log">Debug</ngcart-checkout>
+  <ngcart-checkout service="http" settings="settings.http">Credit/Debit Card</ngcart-checkout>
+  <ngcart-checkout service="paypal" settings="settings.paypal">Paypal</ngcart-checkout>
+</div>

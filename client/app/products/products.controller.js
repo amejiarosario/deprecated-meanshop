@@ -30,6 +30,17 @@ angular.module('meanstackApp')
         $state.go('viewProduct', {id: value._id});
       }, errorHandler($scope));
     }
+  })
+
+  .controller('ProductCheckoutCtrl', function($scope){
+    $scope.settings = {
+      http: { url: '/checkout' },
+      paypal: {
+        business: 'adriansky@gmail.com',
+        item_number: (new Date()).getTime(),
+        currency_code: 'USD'
+      }
+    };
   });
 
 function errorHandler(scope){

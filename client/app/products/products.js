@@ -25,5 +25,11 @@ angular.module('meanstackApp')
         url: '/products/:id/edit',
         templateUrl: 'app/products/product-edit.html',
         controller: 'ProductEditCtrl'
+      })
+
+      .state('checkout', {
+        url: '/checkout',
+        templateUrl: 'app/products/products-checkout.html',
+        controller: 'ProductCheckoutCtrl'
       });
   });
