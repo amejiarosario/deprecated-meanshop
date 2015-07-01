@@ -7,6 +7,10 @@ describe('Product', function() {
     Product.remove(done); // remove all data
   });
 
+  after(function(done){
+    Product.remove(done); // remove all data
+  });
+
   it('should not create without title', function(done) {
     Product.create({price: 123.45}, function(err){
       err.should.not.be.empty;

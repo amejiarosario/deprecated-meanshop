@@ -32,15 +32,22 @@ angular.module('meanstackApp')
     }
   })
 
-  .controller('ProductCheckoutCtrl', function($scope){
-    $scope.settings = {
-      http: { url: '/checkout' },
-      paypal: {
-        business: 'adriansky@gmail.com',
-        item_number: (new Date()).getTime(),
-        currency_code: 'USD'
+  .controller('ProductCheckoutCtrl', function($scope, $window){
+    $scope.payPalSettings = {
+      url: '/api/orders/checkout',
+      data: {
+        payment: 'paypal'
       }
     };
+
+    $scope.$on('ngCart:checkout_success', function(event, data){
+      // redirect to paypal
+      $window.location.href = data.payment.links[1].href;
+    });
+
+    $scope.$on('ngCart:checkout_failed', function (event, err) {
+      console.log('on error', err);
+    });
   });
 
 function errorHandler(scope){
