@@ -47,6 +47,24 @@ describe('Order', function() {
         done();
       }).then(null, done);
     });
+
+    it('should not create an Order without total', function() {
+      var invalid_attributes = {
+        products: products.map(function(p){ return p._id; }),
+        user: user._id,
+      };
+
+      Order.create(invalid_attributes).then(function (results) {
+        return Order.findOne({}).populate(['products', 'user']);
+      }).then(function(order){
+        order.should.be.null;
+        done();
+      }).then(null, function(err){
+        err.should.not.be.null;
+        err.message.should.match(/validation\ failed/);
+        done();
+      });
+    });
   });
 });
 

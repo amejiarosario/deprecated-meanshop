@@ -76,7 +76,7 @@ describe('POST /api/orders/checkout', function() {
   it('should create a order with valid data', function(done) {
     request(app)
       .post('/api/orders/checkout')
-      // .expect(201)
+      .expect(201)
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .send(orderReq)

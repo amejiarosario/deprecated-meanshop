@@ -87,9 +87,6 @@ function handleOrderId(req, res, callback){
 }
 */
 exports.checkout = function(req, res, next) {
-  console.log('data', JSON.stringify(req.body.data));
-  // console.log('user: ', req.user);
-
   var data = req.body.data;
   var paymentType = req.body.options.payment;
 
@@ -101,16 +98,12 @@ exports.checkout = function(req, res, next) {
     if(err) { return handleError(res, err); }
     if(paymentType === 'paypal'){
       paypal.createPayment(data, function(err, payment){
-        // console.log('error: ', err);
-        // console.log('payment: ', payment);
         if(err) return handleError(res, err);
-        // res.redirect(payment.links[1].href);
         res.json(201, { order: order, payment: payment });
       })
     } else {
       return res.json(404, { message: 'Payment provider not supported.' });
     }
-    // return res.json(201, order);
   });
 };
 
