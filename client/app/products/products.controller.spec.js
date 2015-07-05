@@ -1,5 +1,13 @@
 'use strict';
 
+function callCallbackWithError(err, obj){
+  return function(/* arguments */){
+    // last argument is always the callback
+    var callback = arguments[arguments.length-1];
+    callback(err, obj);
+  };
+}
+
 var controller, scope, Products, state, mockProduct,
     validAttributes = [
       {id: 1, title: 'Product 1', price: 100.10 },
@@ -114,11 +122,3 @@ describe('Controller: ProductsCtrl', function () {
     });
   });
 });
-
-function callCallbackWithError(err, obj){
-  return function(/* arguments */){
-    // last argument is always the callback
-    var callback = arguments[arguments.length-1];
-    callback(err, obj);
-  };
-}

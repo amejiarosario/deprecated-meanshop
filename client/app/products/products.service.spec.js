@@ -1,12 +1,33 @@
 'use strict';
 
 var Products, $httpBackend,
-    valid_attributes = [
+    validAttributes = [
       {title: 'Product1', price: 123.45 },
       {title: 'Product2', price: 678.90 }
     ],
     newAttributes = {title: 'Product3', price: 1000 },
     productWithId = angular.extend({}, newAttributes, {id: 123});
+
+function successCb(match){
+  return function(value/*, responseHeaders*/){
+    expect(value).toEqualData(match);
+  };
+}
+
+function itShouldHandleNotFoundWith(verb, fnName){
+  return it('should return `not found` when ' + verb.toUpperCase() +
+    ' /api/products/:id does not exist', function() {
+    $httpBackend
+      .expect(verb.toUpperCase(), '/api/products/999')
+      .respond(404, 'not found');
+
+    Products[fnName || verb.toLowerCase()]({id: 999}, {}, successCb, function fail(err) {
+      expect(err.status).toBe(404);
+      expect(err.data).toBe('not found');
+    });
+  });
+}
+
 
 describe('Service: Products', function () {
   beforeEach(module('meanstackApp'));
@@ -29,9 +50,9 @@ describe('Service: Products', function () {
 
   describe('index - list products', function() {
     it('should fetch products with HTTP GET request', function() {
-      $httpBackend.expectGET('/api/products').respond(valid_attributes);
+      $httpBackend.expectGET('/api/products').respond(validAttributes);
       Products.query(function (products) {
-        expect(products).toEqualData(valid_attributes);
+        expect(products).toEqualData(validAttributes);
       });
     });
 
@@ -47,9 +68,9 @@ describe('Service: Products', function () {
     it('should get a single product by id', function() {
       $httpBackend
         .expectGET('/api/products/1')
-        .respond(valid_attributes[0]);
+        .respond(validAttributes[0]);
       Products.get({id: 1}, function(product){
-        expect(product).toEqualData(valid_attributes[0]);
+        expect(product).toEqualData(validAttributes[0]);
       });
     });
 
@@ -82,14 +103,14 @@ describe('Service: Products', function () {
   });
 
   describe('update - changes products attributes', function() {
-    var updated_values = {title: 'new title', price: 987};
+    var updatedValues = {title: 'new title', price: 987};
 
     it('should update attributes with PUT', function() {
       $httpBackend
-        .expectPUT('/api/products/123', updated_values)
-        .respond(angular.extend({}, updated_values, {id: 123}));
+        .expectPUT('/api/products/123', updatedValues)
+        .respond(angular.extend({}, updatedValues, {id: 123}));
 
-      Products.update({id: 123}, updated_values, function(product){
+      Products.update({id: 123}, updatedValues, function(product){
         expect(product.id).toBe(123);
         expect(product.price).toBe(987);
         expect(product.title).toBe('new title');
@@ -110,25 +131,5 @@ describe('Service: Products', function () {
     itShouldHandleNotFoundWith('delete');
   });
 });
-
-function successCb(match){
-  return function(value, responseHeaders){
-    expect(value).toEqualData(match);
-  }
-}
-
-function itShouldHandleNotFoundWith(verb, fnName){
-  return it('should return `not found` when ' + verb.toUpperCase() +
-    ' /api/products/:id does not exist', function() {
-    $httpBackend
-      .expect(verb.toUpperCase(), '/api/products/999')
-      .respond(404, 'not found');
-
-    Products[fnName || verb.toLowerCase()]({id: 999}, {}, successCb, function fail(err) {
-      expect(err.status).toBe(404);
-      expect(err.data).toBe('not found');
-    });
-  });
-}
 
 

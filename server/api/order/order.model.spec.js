@@ -48,7 +48,7 @@ describe('Order', function() {
       }).then(null, done);
     });
 
-    it('should not create an Order without total', function() {
+    it('should not create an Order without total', function(done) {
       var invalid_attributes = {
         products: products.map(function(p){ return p._id; }),
         user: user._id,
@@ -57,10 +57,10 @@ describe('Order', function() {
       Order.create(invalid_attributes).then(function (results) {
         return Order.findOne({}).populate(['products', 'user']);
       }).then(function(order){
-        order.should.be.null;
+        order.should.be.eql(null);
         done();
       }).then(null, function(err){
-        err.should.not.be.null;
+        err.should.not.be.eql(null);
         err.message.should.match(/validation\ failed/);
         done();
       });

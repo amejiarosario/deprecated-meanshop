@@ -2,7 +2,7 @@
 
 var Product = require('./product.model.js');
 
-describe('Product', function() {
+xdescribe('Product', function() {
   beforeEach(function(done){
     Product.remove(done); // remove all data
   });
@@ -13,7 +13,7 @@ describe('Product', function() {
 
   it('should not create without title', function(done) {
     Product.create({price: 123.45}, function(err){
-      err.should.not.be.empty;
+      err.should.not.be.empty();
       done();
     });
   });
@@ -30,14 +30,14 @@ describe('Product', function() {
 
   it('should not create without price', function(done) {
     Product.create({title: 'no price'}, function(err){
-      err.should.not.be.empty;
+      err.should.not.be.empty();
       done();
     });
   });
 
   it('should not allow negative price', function(done) {
     Product.create({title: 'title', price: -123}, function(err){
-      err.should.not.be.empty;
+      err.should.not.be.empty();
       done();
     });
   });
