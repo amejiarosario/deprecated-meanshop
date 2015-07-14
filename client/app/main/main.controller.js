@@ -1,7 +1,11 @@
 'use strict';
 
 angular.module('meanstackApp')
-  .controller('MainCtrl', function ($scope, $http, socket) {
+  .controller('MainCtrl', function ($scope, $http, socket, Products) {
+    Products.query(function (products) {
+      $scope.products =  products.slice(0, 3);
+    });
+
     $scope.awesomeThings = [];
 
     $http.get('/api/things').success(function(awesomeThings) {

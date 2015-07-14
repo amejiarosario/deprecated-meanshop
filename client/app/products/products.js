@@ -9,6 +9,12 @@ angular.module('meanstackApp')
         controller: 'ProductsCtrl'
       })
 
+      .state('productCatalog', {
+        url: '/products/:slug',
+        templateUrl: 'app/products/products.html',
+        controller: 'ProductCatalogCtrl'
+      })
+
       .state('viewProduct', {
         url: '/products/:id',
         templateUrl: 'app/products/product-view.html',

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('meanstackApp')
-  .controller('NavbarCtrl', function ($scope, $location, Auth) {
+  .controller('NavbarCtrl', function ($scope, $location, Auth, $rootScope) {
     $scope.menu = [{
       'title': 'Home',
       'link': '/'
@@ -23,4 +23,8 @@ angular.module('meanstackApp')
     $scope.isActive = function(route) {
       return route === $location.path();
     };
+
+    $scope.search = function () {
+      $rootScope.$broadcast('search:term', $scope.searchTerm);
+    }
   });

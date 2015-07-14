@@ -20,6 +20,16 @@
         <li ng-show="isAdmin()" ng-class="{active: isActive('/admin')}"><a href="/admin">Admin</a></li>
       </ul>
 
+      <!-- search bar -->
+      <form class="navbar-form navbar-left" role="search">
+        <div class="form-group">
+          <div class="input-group">
+            <span class="input-group-addon"><span class="fa fa-search"></span></span>
+            <input type="text" class="form-control input-large" placeholder="Search" ng-model="searchTerm" ng-change="search()">
+          </div>
+        </div>
+      </form>
+
       <!-- User/Cart items -->
       <ul class="nav navbar-nav navbar-right">
         <li ng-hide="isLoggedIn()" ng-class="{active: isActive('/signup')}">

@@ -9,6 +9,17 @@ function errorHandler(scope){
 angular.module('meanstackApp')
   .controller('ProductsCtrl', function ($scope, Products) {
     $scope.products = Products.query();
+
+    $scope.$on('search:term', function (event, data) {
+      if(data.length)
+        $scope.products = Products.search({id: data});
+      else
+        $scope.products = Products.query();
+    })
+  })
+
+  .controller('ProductCatalogCtrl', function ($scope, $stateParams, Products) {
+    $scope.products = Products.catalog({id: $stateParams.slug});
   })
 
   .controller('ProductViewCtrl', function ($scope, $state, $stateParams, Products) {

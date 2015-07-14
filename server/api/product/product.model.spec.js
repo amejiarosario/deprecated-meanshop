@@ -1,6 +1,25 @@
 'use strict';
 
 var Product = require('./product.model.js');
+var utils = require('../../components/utils');
+
+describe('Product Search', function () {
+  beforeEach(function (done) {
+    utils.createProductsCatalog(done);
+  });
+
+  it('should find 1 product with _corolla_ word', function(done) {
+    Product.search('corolla', function (err, data) {
+      console.error(err);
+      // array of finded results
+      console.log(data.results);
+      // count of all matching objects
+      console.log(data.totalCount);
+      done(err);
+    })
+  });
+
+});
 
 xdescribe('Product', function() {
   beforeEach(function(done){
