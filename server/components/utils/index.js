@@ -17,7 +17,7 @@ exports.cleanDb = function(done){
       done('Failed to connect to database ' +
         config.mongo.uri + '. ' + err);
     } else {
-      return mongoose.connection.db.dropDatabase(done);
+      mongoose.connection.db.dropDatabase(done);
       mongoose.connection.close();
     }
   });

@@ -42,7 +42,7 @@ Catalog
   })
   .then(function (category) {
     appliances = category._id;
-    console.log('Finished populating Catalog', mainCatalog);
+    console.log('Finished populating Catalog');
 
     return Product.find({}).remove({});
   })

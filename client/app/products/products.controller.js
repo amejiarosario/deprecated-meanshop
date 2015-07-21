@@ -11,11 +11,12 @@ angular.module('meanstackApp')
     $scope.products = Products.query();
 
     $scope.$on('search:term', function (event, data) {
-      if(data.length)
+      if(data.length){
         $scope.products = Products.search({id: data});
-      else
+      } else {
         $scope.products = Products.query();
-    })
+      }
+    });
   })
 
   .controller('ProductCatalogCtrl', function ($scope, $stateParams, Products) {

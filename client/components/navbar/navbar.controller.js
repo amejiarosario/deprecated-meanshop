@@ -26,5 +26,5 @@ angular.module('meanstackApp')
 
     $scope.search = function () {
       $rootScope.$broadcast('search:term', $scope.searchTerm);
-    }
+    };
   });

@@ -1,27 +1,25 @@
 'use strict';
 
+/* jshint expr: true */
 var Product = require('./product.model.js');
 var utils = require('../../components/utils');
 
-describe('Product Search', function () {
+describe('Product text search', function () {
   beforeEach(function (done) {
     utils.createProductsCatalog(done);
   });
 
   it('should find 1 product with _corolla_ word', function(done) {
-    Product.search('corolla', function (err, data) {
-      console.error(err);
-      // array of finded results
-      console.log(data.results);
-      // count of all matching objects
-      console.log(data.totalCount);
-      done(err);
-    })
+    Product.findOne({$text: {$search: 'corolla'}})
+      .exec(function (err, product) {
+        if(err) return done(err);
+        product.title.should.be.eql('Toyota Corolla 2014');
+        done();
+      });
   });
-
 });
 
-xdescribe('Product', function() {
+describe('Product', function() {
   beforeEach(function(done){
     Product.remove(done); // remove all data
   });
@@ -32,7 +30,7 @@ xdescribe('Product', function() {
 
   it('should not create without title', function(done) {
     Product.create({price: 123.45}, function(err){
-      err.should.not.be.empty();
+      err.should.not.be.empty;
       done();
     });
   });
@@ -49,14 +47,14 @@ xdescribe('Product', function() {
 
   it('should not create without price', function(done) {
     Product.create({title: 'no price'}, function(err){
-      err.should.not.be.empty();
+      err.should.not.be.empty;
       done();
     });
   });
 
   it('should not allow negative price', function(done) {
     Product.create({title: 'title', price: -123}, function(err){
-      err.should.not.be.empty();
+      err.should.not.be.empty;
       done();
     });
   });

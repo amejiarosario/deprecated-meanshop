@@ -121,10 +121,12 @@ describe('Finding products by category', function () {
   });
 
   it('should find 3 electronic products', function(done) {
-    Product
-      .find({'categories': electronics })
-      .populate('categories')
-      .exec()
+    Catalog.findOne({name: 'Electronics'})
+      .then(function (electronics) {
+        return Product
+          .find({'categories': electronics._id })
+          .populate('categories');
+      })
       .then(function (products) {
         products.length.should.be.equal(3);
         done()
@@ -133,10 +135,16 @@ describe('Finding products by category', function () {
   });
 
   it('should find one vehicle and one clothing products', function (done) {
-    Product
-      .find({'categories': { $in: [vehicle, clothing]} })
-      .populate('categories')
-      .exec()
+    var vehicle;
+
+    Catalog.findOne({name: 'Vehicle'})
+      .then(function (_vehicle) {
+        vehicle = _vehicle;
+        return Catalog.findOne({name: 'Clothing'});
+      })
+      .then(function (clothing) {
+        return Product.find({'categories': { $in: [vehicle._id, clothing._id]} });
+      })
       .then(function (products) {
         products.length.should.be.equal(2);
         done()
@@ -146,18 +154,14 @@ describe('Finding products by category', function () {
 
 
   it('should find _all_ products', function (done) {
-    Product
-      .find({'categories': { $in: mainCatalog.children } })
-      .populate('categories')
-      .exec()
+    Catalog.findOne({name: 'All'})
+      .then(function (_mainCatalog) {
+        mainCatalog = _mainCatalog;
+        return Product.find({'categories': { $in: mainCatalog.children } })
+      })
       .then(function (products) {
-        mainCatalog.children.should.containEql(vehicle);
-        mainCatalog.children.should.containEql(clothing);
-        mainCatalog.children.should.containEql(electronics);
-        mainCatalog.children.should.containEql(books);
-        mainCatalog.children.should.containEql(pantry);
         products.length.should.be.equal(6);
-        done()
+        done();
       })
       .then(null, done);
   });
