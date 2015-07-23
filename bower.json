@@ -16,7 +16,7 @@
     "lodash": "~2.4.1",
     "angular-socket-io": "~0.6.0",
     "angular-ui-router": "~0.2.10",
-    "ngcart": "~0.0.3-rc.2"
+    "ngCart": "amejiarosario/ngCart#master"
   },
   "devDependencies": {
     "angular-mocks": ">=1.2.*",
