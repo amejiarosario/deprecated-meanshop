@@ -2,6 +2,7 @@
 
 function errorHandler(scope){
   return function(httpResponse){
+    console.err(httpResponse);
     scope.errors = JSON.stringify(httpResponse);
   };
 }

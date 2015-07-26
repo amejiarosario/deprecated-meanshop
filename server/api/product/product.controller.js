@@ -21,7 +21,6 @@ exports.catalog = function(req, res) {
     .findOne({ slug: req.params.slug })
     .then(function (catalog) {
       var catalog_ids = [catalog._id].concat(catalog.children);
-      console.log(catalog_ids, catalog);
       return Product
         .find({'categories': { $in: catalog_ids } })
         .populate('categories')
@@ -93,5 +92,6 @@ function handleProductId(req, res, callback){
 }
 
 function handleError(res, err) {
+  console.error(err.stack);
   return res.json(500, err);
 }
