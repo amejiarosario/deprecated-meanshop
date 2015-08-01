@@ -10,6 +10,16 @@ var User = require('../api/user/user.model');
 var Catalog = require('../api/catalog/catalog.model');
 var mainCatalog, electronics, books, clothing, vehicle, pantry, appliances;
 
+/* //Clear all products and catalog
+Catalog
+  .find({})
+  .remove()
+  .then(function () {
+    return Product.find({}).remove();
+  });
+
+//*/
+
 Catalog
   .find({})
   .remove()
@@ -91,6 +101,8 @@ Catalog
   .then(null, function (err) {
     console.error(err);
   });
+
+//*/
 
 User.find({}).remove(function() {
   User.create({
