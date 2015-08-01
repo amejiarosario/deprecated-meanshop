@@ -17,10 +17,12 @@ angular.module('meanstackApp')
     };
 
     $scope.showProduct = function(product){
+      // TODO: model windows (popup)
       return $location.path('/products/' + product._id);
     };
 
     $scope.editProduct = function(product){
+      // TODO: model windows (popup)
       return $location.path('/products/' + product._id + '/edit');
     };
 
