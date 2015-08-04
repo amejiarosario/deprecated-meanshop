@@ -1,13 +1,5 @@
 'use strict';
 
-var Products, $httpBackend,
-    validAttributes = [
-      {title: 'Product1', price: 123.45 },
-      {title: 'Product2', price: 678.90 }
-    ],
-    newAttributes = {title: 'Product3', price: 1000 },
-    productWithId = angular.extend({}, newAttributes, {id: 123});
-
 function successCb(match){
   return function(value/*, responseHeaders*/){
     expect(value).toEqualData(match);
@@ -28,8 +20,15 @@ function itShouldHandleNotFoundWith(verb, fnName){
   });
 }
 
-
 describe('Service: Products', function () {
+  var Products, $httpBackend,
+      validAttributes = [
+        {title: 'Product1', price: 123.45 },
+        {title: 'Product2', price: 678.90 }
+      ],
+      newAttributes = {title: 'Product3', price: 1000 },
+      productWithId = angular.extend({}, newAttributes, {id: 123});
+
   beforeEach(module('meanstackApp'));
   beforeEach(inject(function (_Products_, _$httpBackend_) {
     Products = _Products_;

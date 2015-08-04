@@ -1,28 +1,38 @@
 'use strict';
 
-function callCallbackWithError(err, obj){
+function callCallbackWithError(err){
   return function(/* arguments */){
-    // last argument is always the callback
-    var callback = arguments[arguments.length-1];
-    callback(err, obj);
+    var length    = arguments.length;
+    var errorCb   = arguments[length-1];
+    var successCb = arguments[length-2];
+    var params    = arguments[length-3];
+
+    if(err){
+      return errorCb(err);
+    } else {
+      return successCb(params);
+    }
   };
 }
 
-var controller, scope, Products, state, mockProduct,
-    validAttributes = [
-      {id: 1, title: 'Product 1', price: 100.10 },
-      {id: 2, title: 'Product 2', price: 200.20 },
-    ];
-
 describe('Controller: ProductsCtrl', function () {
+  var controller, scope, Products, state, mockProduct;
+
+  var validAttributes = [
+    {_id: 1, title: 'Product 1', price: 100.10, stock: 10 },
+    {_id: 2, title: 'Product 2', price: 200.20, stock: 10 },
+  ];
+
   beforeEach(module('meanstackApp'));
+
   beforeEach(inject(function ($rootScope) {
     scope = $rootScope.$new();
+    mockProduct = validAttributes[0];
+
     Products = jasmine.createSpyObj('Products',
       ['get', 'save', 'query', 'remove', 'delete', 'update']
     );
     state = jasmine.createSpyObj('state', ['go']);
-    mockProduct = validAttributes[0];
     Products.get.andReturn(mockProduct);
     Products.query.andReturn(validAttributes);
   }));
@@ -54,12 +64,16 @@ describe('Controller: ProductsCtrl', function () {
     });
 
     it('should remove product and redirect if succeded', function() {
-      Products.delete.andCallFake(callCallbackWithError(false));
+      Products.delete.andCallFake(callCallbackWithError());
+
       scope.deleteProduct(mockProduct);
+
       expect(Products.delete).toHaveBeenCalledWith(
-        { id: mockProduct.id },
-        jasmine.any(Function)
+        { id: mockProduct._id },
+        jasmine.any(Function), // success handler
+        jasmine.any(Function) // error handler
       );
+
       expect(state.go).toHaveBeenCalledWith('products');
     });
 
@@ -80,13 +94,15 @@ describe('Controller: ProductsCtrl', function () {
     }));
 
     it('should create a new product and redirect to products', function() {
-      Products.save.andCallFake(callCallbackWithError(false, mockProduct));
-      scope.addProduct(mockProduct);
+      Products.save.andCallFake(callCallbackWithError(false));
+      scope.product = mockProduct;
+      scope.addProduct();
       expect(Products.save).toHaveBeenCalledWith(
         mockProduct,
+        jasmine.any(Function),
         jasmine.any(Function)
       );
-      expect(state.go).toHaveBeenCalledWith('products/' + mockProduct.id);
+      expect(state.go).toHaveBeenCalledWith('viewProduct', {id: mockProduct._id});
     });
 
     it('should not redirect if save fails', function() {
@@ -110,9 +126,16 @@ describe('Controller: ProductsCtrl', function () {
     });
 
     it('should edit product and redirect to view if success', function() {
-      Products.update.andCallFake(callCallbackWithError(false, mockProduct));
-      scope.editProduct(mockProduct);
-      expect(state.go).toHaveBeenCalledWith('products/' + mockProduct.id);
+      Products.update.andCallFake(callCallbackWithError(false));
+      scope.product = mockProduct;
+      scope.editProduct();
+      expect(Products.update).toHaveBeenCalledWith(
+        {id: mockProduct._id},
+        mockProduct,
+        jasmine.any(Function),
+        jasmine.any(Function)
+      );
+      expect(state.go).toHaveBeenCalledWith('viewProduct', {id: mockProduct._id});
     });
 
     it('should not redirect if failed', function() {

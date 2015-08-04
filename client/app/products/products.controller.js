@@ -1,8 +1,8 @@
 'use strict';
 
 function errorHandler(scope){
-  return function(httpResponse){
-    console.err(httpResponse);
+  return function error(httpResponse){
+    // console.error(httpResponse);
     scope.errors = JSON.stringify(httpResponse);
   };
 }
@@ -27,8 +27,8 @@ angular.module('meanstackApp')
   .controller('ProductViewCtrl', function ($scope, $state, $stateParams, Products) {
     $scope.product = Products.get({id: $stateParams.id});
     $scope.deleteProduct = function(product){
-      Products.delete({id: product._id}, function (/* value, responseHeaders */) {
-          $state.go('products');
+      Products.delete({id: product._id}, function success(/* value, responseHeaders */) {
+        $state.go('products');
       }, errorHandler($scope));
     };
   })
@@ -36,7 +36,8 @@ angular.module('meanstackApp')
   .controller('ProductNewCtrl', function ($scope, $state, Products) {
     $scope.product = {}; // create a new instance
     $scope.addProduct = function(){
-      Products.save($scope.product, function(value /*, responseHeaders*/){
+      Products.save($scope.product, function success(value /*, responseHeaders*/){
+
         $state.go('viewProduct', {id: value._id});
       }, errorHandler($scope));
     };
@@ -45,7 +46,7 @@ angular.module('meanstackApp')
   .controller('ProductEditCtrl', function ($scope, $state, $stateParams, Products) {
     $scope.product = Products.get({id: $stateParams.id});
     $scope.editProduct = function(){
-      Products.update({id: $scope.product._id}, $scope.product, function(value /*, responseHeaders*/){
+      Products.update({id: $scope.product._id}, $scope.product, function success(value /*, responseHeaders*/){
         $state.go('viewProduct', {id: value._id});
       }, errorHandler($scope));
     };
