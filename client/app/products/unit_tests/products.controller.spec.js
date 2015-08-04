@@ -1,20 +1,5 @@
 'use strict';
 
-function callCallbackWithError(err){
-  return function(/* arguments */){
-    var length    = arguments.length;
-    var errorCb   = arguments[length-1];
-    var successCb = arguments[length-2];
-    var params    = arguments[length-3];
-
-    if(err){
-      return errorCb(err);
-    } else {
-      return successCb(params);
-    }
-  };
-}
-
 describe('Controller: ProductsCtrl', function () {
   var controller, scope, Products, state, mockProduct;
 
@@ -144,4 +129,19 @@ describe('Controller: ProductsCtrl', function () {
       expect(state.go).not.toHaveBeenCalled();
     });
   });
+
+  function callCallbackWithError(err){
+    return function(/* arguments */){
+      var length    = arguments.length;
+      var errorCb   = arguments[length-1];
+      var successCb = arguments[length-2];
+      var params    = arguments[length-3];
+
+      if(err){
+        return errorCb(err);
+      } else {
+        return successCb(params);
+      }
+    };
+  }
 });
