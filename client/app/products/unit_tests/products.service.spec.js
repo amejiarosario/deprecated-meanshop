@@ -1,25 +1,5 @@
 'use strict';
 
-function successCb(match){
-  return function(value/*, responseHeaders*/){
-    expect(value).toEqualData(match);
-  };
-}
-
-function itShouldHandleNotFoundWith(verb, fnName){
-  return it('should return `not found` when ' + verb.toUpperCase() +
-    ' /api/products/:id does not exist', function() {
-    $httpBackend
-      .expect(verb.toUpperCase(), '/api/products/999')
-      .respond(404, 'not found');
-
-    Products[fnName || verb.toLowerCase()]({id: 999}, {}, successCb, function fail(err) {
-      expect(err.status).toBe(404);
-      expect(err.data).toBe('not found');
-    });
-  });
-}
-
 describe('Service: Products', function () {
   var Products, $httpBackend,
       validAttributes = [
@@ -129,6 +109,27 @@ describe('Service: Products', function () {
 
     itShouldHandleNotFoundWith('delete');
   });
+
+  function successCb(match){
+    return function(value/*, responseHeaders*/){
+      expect(value).toEqualData(match);
+    };
+  }
+
+  function itShouldHandleNotFoundWith(verb, fnName){
+    return it('should return `not found` when ' + verb.toUpperCase() +
+      ' /api/products/:id does not exist', function() {
+      $httpBackend
+        .expect(verb.toUpperCase(), '/api/products/999')
+        .respond(404, 'not found');
+
+      Products[fnName || verb.toLowerCase()]({id: 999}, {}, successCb, function fail(err) {
+        expect(err.status).toBe(404);
+        expect(err.data).toBe('not found');
+      });
+    });
+  }
+
 });
 
 
