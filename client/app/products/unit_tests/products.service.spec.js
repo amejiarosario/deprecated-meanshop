@@ -117,7 +117,7 @@ describe('Service: Products', function () {
         .respond(validAttributes);
       Products.catalog({id: 'books'}, function (products) {
         expect(products).toEqualData(validAttributes);
-      })
+      });
     });
   });
 
@@ -128,7 +128,7 @@ describe('Service: Products', function () {
         .respond(validAttributes);
       Products.search({id: 'white'}, function (products) {
         expect(products).toEqualData(validAttributes);
-      })
+      });
     });
   });
 

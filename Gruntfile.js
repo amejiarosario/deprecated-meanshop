@@ -664,7 +664,8 @@ module.exports = function (grunt) {
   grunt.registerTask('default', [
     'newer:jshint',
     'test',
-    'build'
+    'build',
+    'serve'
   ]);
 
   grunt.registerTask('db', function (target) {
