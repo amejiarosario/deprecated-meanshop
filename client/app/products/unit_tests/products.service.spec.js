@@ -110,6 +110,28 @@ describe('Service: Products', function () {
     itShouldHandleNotFoundWith('delete');
   });
 
+  describe('catalog - products withing _books_ category', function() {
+    it('forms URL for product catalogs', function () {
+      $httpBackend
+        .expectGET('/api/products/books/catalog')
+        .respond(validAttributes);
+      Products.catalog({id: 'books'}, function (products) {
+        expect(products).toEqualData(validAttributes);
+      })
+    });
+  });
+
+  describe('search - products containing _white_ word', function() {
+    it('forms search URL with searched keyword', function () {
+      $httpBackend
+        .expectGET('/api/products/white/search')
+        .respond(validAttributes);
+      Products.search({id: 'white'}, function (products) {
+        expect(products).toEqualData(validAttributes);
+      })
+    });
+  });
+
   function successCb(match){
     return function(value/*, responseHeaders*/){
       expect(value).toEqualData(match);
